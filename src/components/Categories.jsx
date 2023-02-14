@@ -1,15 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-function Categories(props) {
+function Categories() {
+    const [activeCategory, setActiveCategory] = useState(1);
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        fetch('http://apiserver/categories').then((res) => res.json()).then((arr) => {
+            setCategories(arr);
+        });
+    }, [])
+
     return (
         <div className="categories">
             <ul>
-                <li className="active">Все</li>
-                <li>Мясные</li>
-                <li>Вегетарианская</li>
-                <li>Гриль</li>
-                <li>Острые</li>
-                <li>Закрытые</li>
+                {
+                    categories.map((value) => (
+                        <li key={value.id} className={activeCategory === Number(value.id) ? 'active' : ''} onClick={() => setActiveCategory(value.id)}>{value.name}</li>
+                    ))
+                }
             </ul>
         </div>
     );

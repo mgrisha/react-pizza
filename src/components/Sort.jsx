@@ -1,6 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-function Sort(props) {
+function Sort() {
+    const [popupOpen, setPopupOpen] = useState(false);
+    const [activeSort, setActiveSort] = useState(0);
+
+    const sortsName = ['популярності', 'ціні', 'алфавіту'];
+
+    const handleSelectSort = (index) => {
+        setActiveSort(index);
+        setPopupOpen(false);
+    }
+
     return (
         <div className="sort">
             <div className="sort__label">
@@ -17,13 +27,13 @@ function Sort(props) {
                     />
                 </svg>
                 <b>Сортировка по:</b>
-                <span>популярности</span>
+                <span onClick={() => setPopupOpen(!popupOpen)}>{sortsName[activeSort]}</span>
             </div>
-            <div className="sort__popup">
+            <div className={`sort__popup${popupOpen ? ' active' : ''}`}>
                 <ul>
-                    <li className="active">популярности</li>
-                    <li>цене</li>
-                    <li>алфавиту</li>
+                    {
+                        sortsName.map((sortName, i) => <li className={activeSort === i ? 'active' : ''} key={i} onClick={() => handleSelectSort(i)}>{sortName}</li>)
+                    }
                 </ul>
             </div>
         </div>
