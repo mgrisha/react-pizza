@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-function Categories() {
-    const [activeCategory, setActiveCategory] = useState(1);
+function Categories({ categoryId, onChangeCategory }) {
+    // const [activeCategory, setActiveCategory] = useState(1);
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
@@ -15,7 +15,7 @@ function Categories() {
             <ul>
                 {
                     categories.map((value) => (
-                        <li key={value.id} className={activeCategory === Number(value.id) ? 'active' : ''} onClick={() => setActiveCategory(value.id)}>{value.name}</li>
+                        <li key={value.id} className={Number(categoryId) === Number(value.id) ? 'active' : ''} onClick={() => onChangeCategory(value.id)}>{value.name}</li>
                     ))
                 }
             </ul>
