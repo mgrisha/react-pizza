@@ -2,15 +2,17 @@ import React, {useEffect, useState} from 'react';
 import Categories from "../components/Categories";
 import Sort from "../components/Sort";
 import ProductBlock from "../components/ProductBlock";
+import CustomPagination from '../components/Pagination';
 
-function Home() {
+function Home({ searchValue }) {
     const [items, setItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [categoryId, setCategoryId] = useState(0);
     const [sortType, setSortType] = useState(0);
     const [sortTypes, setSortTypes] = useState([]);
     const [isLoadingSorts, setIsLoadingSorts] = useState(false);
-
+    const [countPages, setCountPages] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         // fetch('http://apiserver/sorts')
@@ -30,9 +32,10 @@ function Home() {
         fetchData2();
     }, []);
 
-    const category = categoryId > 0 ? `category=${categoryId}` : '';
+    const category = categoryId > 0 ? `&category=${categoryId}` : '';
     const order = (sortTypes.length > 0 && sortTypes[sortType].sort.includes('-')) ? 'asc' : 'desc';
     const sortBy = sortTypes.length > 0 ? sortTypes[sortType].sort.replace('-', '') : 'rating';
+    const search = searchValue ? `&search=${searchValue}` : '';
 
     useEffect(() => {
         setIsLoading(true);
@@ -41,14 +44,19 @@ function Home() {
         //     setIsLoading(false);
         // });
         async function fetchData () {
-            await fetch(`http://apiserver/items?${category}&sortBy=${sortBy}&order=${order}`).then((res) => res.json()).then((arr) => {
-                setItems(arr);
+            await fetch(`http://apiserver/items?page=${currentPage}&limit=4${category}&sortBy=${sortBy}&order=${order}${search}`).then((res) => res.json()).then((arr) => {
+                setItems(arr['pizzas']);
+                setCountPages(arr['countPages']);
                 setIsLoading(false);
             });
         }
         fetchData();
         window.scrollTo(0, 0);
-    }, [category, order, sortBy]);
+    }, [category, order, sortBy, search, currentPage]);
+
+    const handleChangePage = (event, value) => {
+        setCurrentPage(value);
+    }
 
     return (
         <div className="container">
@@ -65,6 +73,7 @@ function Home() {
                         ))
                 }
             </div>
+            {(items.length > 0 && countPages > 1) && <CustomPagination countPages={countPages} currentPage={currentPage} handleChangePage={handleChangePage} />}
         </div>
     );
 }

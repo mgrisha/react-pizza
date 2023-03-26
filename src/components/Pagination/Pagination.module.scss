@@ -1,0 +1,25 @@
+.root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+
+    :global {
+        .MuiButtonBase-root {
+            border: 1px solid #fe5f1e;
+            color: #fe5f1e;
+
+            &.Mui-selected {
+                border-color: #fe5f1e;
+                background-color: rgba(254, 95, 30, 0.7);
+                color: #fff;
+            }
+
+            &:hover {
+                color: #fff;
+                border-color: #fe5f1e;
+                background-color: rgba(254, 95, 30, 0.7);
+            }
+        }
+    }
+}

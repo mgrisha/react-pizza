@@ -29,4 +29,15 @@
       color: #7b7b7b;
     }
   }
+
+	&__cart {
+		&-quantity {
+			display: flex;
+			align-items: center;
+
+			img {
+				margin-right: 10px;
+			}
+		}
+	}
 }
