@@ -11,7 +11,7 @@ function Header() {
                         <img width="38" src="./assets/img/pizza-logo.svg" alt="Pizza logo"/>
                         <div>
                             <h1>React Pizza</h1>
-                            <p>найсмачніша піца у всесвіті</p>
+                            <p>найсмачніша піца в Україні</p>
                         </div>
                     </div>
                 </Link>

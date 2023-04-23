@@ -1,60 +1,69 @@
 import React, {useContext, useEffect, useState} from 'react';
+import axios from 'axios';
 import Categories from "../components/Categories";
 import Sort from "../components/Sort";
 import ProductBlock from "../components/ProductBlock";
 import CustomPagination from '../components/Pagination';
-import { AppContext } from '../App';
+// import { AppContext } from '../App';
+
+import { setCategoryId, setCurrentPage } from '../redux/slices/filterSlice';
+
+import { useSelector, useDispatch } from 'react-redux';
 
 function Home() {
-    const { searchValue } = useContext(AppContext);
+    const categoryId = useSelector((state) => state.filterSlice.categoryId);
+    const sort = useSelector((state) => state.filterSlice.sort);
+    const currentPage = useSelector(state => state.filterSlice.currentPage);
+    const searchValue = useSelector(state => state.searchSlice.searchValue);
+
+    const dispatch = useDispatch();
+
+    // const { searchValue } = useContext(AppContext);
     const [items, setItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [categoryId, setCategoryId] = useState(0);
-    const [sortType, setSortType] = useState(0);
     const [sortTypes, setSortTypes] = useState([]);
     const [isLoadingSorts, setIsLoadingSorts] = useState(false);
     const [countPages, setCountPages] = useState(0);
-    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         async function fetchData2 () {
-            await fetch('http://apiserver/sorts')
-                .then((res) => res.json())
-                .then((arr) => {
-                    setSortTypes(arr);
-                    setIsLoadingSorts(true);
-                });
+            await axios.get('http://apiserver/sorts').then(res => {
+                setSortTypes(res.data);
+                setIsLoadingSorts(true);
+            });
         }
         fetchData2();
     }, []);
 
     const category = categoryId > 0 ? `&category=${categoryId}` : '';
-    const order = (sortTypes.length > 0 && sortTypes[sortType].sort.includes('-')) ? 'asc' : 'desc';
-    const sortBy = sortTypes.length > 0 ? sortTypes[sortType].sort.replace('-', '') : 'rating';
+    const order = (sortTypes.length > 0 && sortTypes[sort].sort.includes('-')) ? 'asc' : 'desc';
+    const sortBy = sortTypes.length > 0 ? sortTypes[sort].sort.replace('-', '') : 'rating';
     const search = searchValue ? `&search=${searchValue}` : '';
 
     useEffect(() => {
         setIsLoading(true);
         async function fetchData () {
-            await fetch(`http://apiserver/items?page=${currentPage}&limit=4${category}&sortBy=${sortBy}&order=${order}${search}`).then((res) => res.json()).then((arr) => {
-                setItems(arr['pizzas']);
-                setCountPages(arr['countPages']);
-                setIsLoading(false);
-            });
+            await axios
+                .get(`http://apiserver/items?page=${currentPage}&limit=4${category}&sortBy=${sortBy}&order=${order}${search}`)
+                .then((res) =>{
+                    setItems(res.data['pizzas']);
+                    setCountPages(res.data['countPages']);
+                    setIsLoading(false);
+                });
         }
         fetchData();
         window.scrollTo(0, 0);
     }, [category, order, sortBy, search, currentPage]);
 
     const handleChangePage = (event, value) => {
-        setCurrentPage(value);
+        dispatch(setCurrentPage(value));
     }
 
     return (
         <div className="container">
             <div className="content__top">
-                <Categories categoryId={categoryId} onChangeCategory={(id) => setCategoryId(id)} />
-                {isLoadingSorts && <Sort sortType={sortType} onChangeSort={(id) => setSortType(id)} sortTypes={sortTypes} />}
+                <Categories categoryId={categoryId} onChangeCategory={(id) => dispatch(setCategoryId(id))} />
+                {isLoadingSorts && <Sort sortTypes={sortTypes} />}
             </div>
             <h2 className="content__title">Всі піци</h2>
             <div className="content__items">

@@ -11,14 +11,18 @@
 
             &.Mui-selected {
                 border-color: #fe5f1e;
-                background-color: rgba(254, 95, 30, 0.7);
+                background-color: rgba(254, 95, 30, .7);
                 color: #fff;
+
+                &:hover {
+                    background-color: rgba(254, 95, 30, .8);
+                }
             }
 
             &:hover {
                 color: #fff;
                 border-color: #fe5f1e;
-                background-color: rgba(254, 95, 30, 0.7);
+                background-color: rgba(254, 95, 30, .7);
             }
         }
     }
