@@ -1,8 +1,40 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-function ProductBlock({ imageUrl, title, types, price, sizes }) {
+import { addItem } from '../redux/slices/cartSlice';
+
+function ProductBlock({ pizzaID, imageUrl, title, types, price, sizes }) {
+    const cartItemsById = useSelector(state => state.cartSlice.items.filter(item => item.pizzaID === pizzaID));
+    // const addedCount = useSelector(state => state.cartSlice.items.reduce((sum, item) => {
+    //     if (item.pizzaID === pizzaID) {
+    //         return sum + item.count;
+    //     }
+    // }, 0));
+
+    const totalCountItemsById = cartItemsById.reduce((sum, item) => {
+        return sum + item.count;
+    }, 0);
+
+    console.log('cart items > ', cartItemsById);
+
     const [activeType, setActiveType] = useState(0);
     const [activeSize, setActiveSize] = useState(0);
+
+    // const addedCount = cartItems ? cartItems.count : 0;
+
+    const dispatch = useDispatch();
+
+    const handleAddItem = () => {
+        const item = {
+            pizzaID,
+            title,
+            price,
+            imageUrl,
+            type: types[activeType],
+            size: sizes[activeSize]
+        }
+        dispatch(addItem(item));
+    }
 
     return (
         <div className="pizza-block-wrapper">
@@ -29,7 +61,7 @@ function ProductBlock({ imageUrl, title, types, price, sizes }) {
                 </div>
                 <div className="pizza-block__bottom">
                     <div className="pizza-block__price">{price} ₴</div>
-                    <div className="button button--outline button--add">
+                    <div className="button button--outline button--add" onClick={handleAddItem}>
                         <svg
                             width="12"
                             height="12"
@@ -43,7 +75,7 @@ function ProductBlock({ imageUrl, title, types, price, sizes }) {
                             />
                         </svg>
                         <span>Добавити</span>
-                        <i>1</i>
+                        {totalCountItemsById > 0 && <i>{totalCountItemsById}</i>}
                     </div>
                 </div>
             </div>
