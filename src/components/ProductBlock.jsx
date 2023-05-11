@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../redux/slices/cartSlice';
 
 function ProductBlock({ pizzaID, imageUrl, title, types, price, sizes }) {
+    const [activeType, setActiveType] = useState(0);
+    const [activeSize, setActiveSize] = useState(0);
+
     const cartItemsById = useSelector(state => state.cartSlice.items.filter(item => item.pizzaID === pizzaID));
     // const addedCount = useSelector(state => state.cartSlice.items.reduce((sum, item) => {
     //     if (item.pizzaID === pizzaID) {
@@ -14,11 +17,6 @@ function ProductBlock({ pizzaID, imageUrl, title, types, price, sizes }) {
     const totalCountItemsById = cartItemsById.reduce((sum, item) => {
         return sum + item.count;
     }, 0);
-
-    console.log('cart items > ', cartItemsById);
-
-    const [activeType, setActiveType] = useState(0);
-    const [activeSize, setActiveSize] = useState(0);
 
     // const addedCount = cartItems ? cartItems.count : 0;
 

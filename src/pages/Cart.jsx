@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import CartItem from "../components/CartItem";
-
 import { useSelector } from "react-redux";
+
+import CartItem from "../components/CartItem";
 
 const Cart = () => {
 
@@ -45,7 +45,7 @@ const Cart = () => {
                     </div>
                 </div>
                 <div className="content__items">
-                    {items.map(item => (<CartItem {...item} key={item.pizzaID} />))}
+                    {items.map((item, index) => (<CartItem {...item} key={item.pizzaID + '_' + index} />))}
                 </div>
                 <div className="cart__bottom">
                     <div className="cart__bottom-details">
