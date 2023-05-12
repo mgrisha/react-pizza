@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
   totalPrice: 0,
-  items: []
+  items: [],
+  itemsLeft: []
 }
 
 const cartSlice = createSlice({
@@ -10,7 +11,7 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addItem (state, action) {
-        const findItem = state.items.find(item => (item.pizzaID === action.payload.pizzaID && item.size === action.payload.size && item.type === action.payload.type));
+        const findItem = state.items.find(item => (Number(item.pizzaID) === Number(action.payload.pizzaID) && Number(item.size) === Number(action.payload.size) && String(item.type) === String(action.payload.type)));
         if (findItem) {
             findItem.count++
         } else {
@@ -21,16 +22,23 @@ const cartSlice = createSlice({
         }
         state.totalPrice = state.items.reduce((sum, item) => {
             return Number(item.price) * Number(item.count) + sum;
-        }, 0)
+        }, 0);
+
+        console.log('action add item, state >', state);
     },
     minusItem (state, action) {
-        const findItem = state.items.find(item => (item.pizzaID === action.payload.pizzaID && item.size === action.payload.size && item.type === action.payload.type));
+        const findItem = state.items.find(item => (Number(item.pizzaID) === Number(action.payload.pizzaID) && Number(item.size) === Number(action.payload.size) && String(item.type) === String(action.payload.type)));
         if (findItem) {
             findItem.count--
         }
     },
     removeItem (state, action) {
-        state.items = state.items.filter(item => (item.pizzaID !== action.payload.pizzaID && item.size !== action.payload.size && item.type !== action.payload.type));
+        // state.items = state.items.filter(item => (item.pizzaID !== action.payload.pizzaID && item.size !== action.payload.size && item.type !== action.payload.type));
+        const itemsLeft = state.items.filter(item => (Number(item.pizzaID) !== Number(action.payload.pizzaID) && Number(item.size) !== Number(action.payload.size) && item.type != action.payload.type));
+        // console.log('action > ', action);
+        // console.log('state > ', state);
+        // console.log('itemsLeft > ', itemsLeft);
+        state.itemsLeft = itemsLeft;
     },
     clearItems (state) {
         state.items = [];

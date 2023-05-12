@@ -1,10 +1,12 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { addItem, removeItem, minusItem } from '../redux/slices/cartSlice'
 
 const CartItem = ({ pizzaID, title, price, count, imageUrl, type, size }) => {
     const dispatch = useDispatch();
+
+    const itemsLeft = useSelector(state => state.cartSlice.itemsLeft);
 
 
     const handlePlusItem = () => {
@@ -25,7 +27,9 @@ const CartItem = ({ pizzaID, title, price, count, imageUrl, type, size }) => {
 
     const handleRemoveItem = () => {
 
-        console.log(pizzaID, type, size);
+        // console.log(pizzaID, type, size);
+
+        console.log('itemsLeft > ', itemsLeft);
 
         dispatch(removeItem({
             pizzaID,
